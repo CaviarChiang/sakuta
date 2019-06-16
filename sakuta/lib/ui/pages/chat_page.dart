@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import '../widgets/chat_bubble_widget.dart';
+import '../widgets/message_input_widget.dart';
 
 class ChatPage extends StatefulWidget{
   var messages = List<ChatBubbleWidget>();
@@ -41,10 +42,15 @@ class _ChatPageState extends State<ChatPage>{
         title: Text(this.title),
       ),
       body: Material(
-        child: ListView(
-          reverse: true,
-          controller: this._scrollController,
-          children: List.from(this.messages),
+        child: Column(
+          children: <Widget>[
+            ListView(
+              reverse: true,
+              controller: this._scrollController,
+              children: List.from(this.messages),
+            ),
+            MessageInputWidget(s),
+          ],
         ),
       ),
     );
