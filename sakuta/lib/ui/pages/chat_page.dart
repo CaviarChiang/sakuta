@@ -4,29 +4,31 @@ import '../widgets/chat_bubble_widget.dart';
 
 class ChatPage extends StatefulWidget{
   var messages = List<ChatBubbleWidget>();
-  _ChatPageState createState() => _ChatPageState(this.messages);
+  _ChatPageState createState() => _ChatPageState(this.messages, ScrollController());
 }
 
 
 class _ChatPageState extends State<ChatPage>{
   Socket s;
-  List<ChatBubbleWidget> messages;
-
-  _ChatPageState(this.messages);
+  String title = "message";
+  List<Widget> messages;
+  ScrollController _scrollController;
+  _ChatPageState(this.messages, this._scrollController);
 
   @override
   void initState(){
     super.initState();
-    print("THIS HAS RAN");
     Socket.connect('mrmyyesterday.com', 5000).then((socket){
-      print("THIS HAS CONNECTED");
       this.s = socket;
       socket.listen((data) {
-        print(new String.fromCharCodes(data).trim());
-        this.messages.add(ChatBubbleWidget(String.fromCharCodes(data).trim()));
+        String message = new String.fromCharCodes(data).trim();
+        //print(message);
+        setState(() {
+          this.messages.insert(0, ChatBubbleWidget(message));  
+          scrollToBottom();
+        });
       },
       onDone: () {
-        print("Done");
         socket.destroy();
       });
     });
@@ -36,14 +38,22 @@ class _ChatPageState extends State<ChatPage>{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chatting with server?'),
+        title: Text(this.title),
       ),
       body: Material(
         child: ListView(
           reverse: true,
-          children: this.messages
-          ,
+          controller: this._scrollController,
+          children: List.from(this.messages),
         ),
       ),
     );
-  }}
+  }
+  void scrollToBottom(){
+    this._scrollController.animateTo(
+      0.0,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+}

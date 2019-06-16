@@ -12,14 +12,21 @@ class ChatBubbleWidget extends StatelessWidget{
       alignment: this.left ? Alignment.centerLeft : Alignment.centerRight,
       //height: 100,
       child: Container(
-        margin: EdgeInsets.all(10),
-        padding: EdgeInsets.all(5),
+        margin: EdgeInsets.only(
+          left: 10,
+          right: 10,
+          bottom: 5
+        ),
+        padding: EdgeInsets.all(7),
         decoration: BoxDecoration(
           color: this.left ? Colors.blue[200] : Colors.red[200],
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
-          this.message
+          this.message,
+          style: TextStyle(
+            fontSize: 20,
+          ),
         ),
       ),
     );
