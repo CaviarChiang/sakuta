@@ -18,6 +18,7 @@ def on_new_client(clientsocket,addr):
         msg = clientsocket.recv(1024)
         print(str(addr) + ' >> ' + str(msg))
         response = 'Here is reponse number ' + str(count)
+        count = count + 1
         #Maybe some code to compute the last digit of PI, play game or anything else can go here and when you are done.
         try:   
             clientsocket.send(response.encode('utf-8'))
