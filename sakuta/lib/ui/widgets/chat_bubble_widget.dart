@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class ChatBubbleWidget extends StatelessWidget{
-  bool left;
-  String message;
+  final bool left;
+  final String message;
+
   ChatBubbleWidget(this.message, {
-    this.left:true, 
+    this.left:true,
   });
 
   Widget build(BuildContext context){
     return Container(
       alignment: this.left ? Alignment.centerLeft : Alignment.centerRight,
-      //height: 100,
       child: Container(
         margin: EdgeInsets.only(
           left: 10,

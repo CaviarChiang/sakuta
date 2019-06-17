@@ -4,8 +4,9 @@ import 'dart:io';
 import 'chat_bubble_widget.dart';
 
 class MessageViewWidget extends StatefulWidget{
-  Socket s;
-  List<Widget> messages;
+  final Socket s;
+  final List<Widget> messages;
+
   MessageViewWidget(this.s, this.messages);
 
   @override
@@ -24,9 +25,8 @@ class _MessageViewWidgetState extends State<MessageViewWidget>{
     super.initState();
     s.listen((data) {
       String message = new String.fromCharCodes(data).trim();
-      //print(message);
       setState(() {
-        this.messages.insert(0, ChatBubbleWidget(message));  
+        this.messages.insert(0, ChatBubbleWidget(message));
         scrollToBottom();
       });
     },

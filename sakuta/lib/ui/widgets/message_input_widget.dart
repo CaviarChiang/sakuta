@@ -8,9 +8,10 @@ class MessageInputWidget extends StatelessWidget{
   final List<Widget> messages;
   final Socket s;
   final Function onSend;
+
   MessageInputWidget(this.s, this.messages, this.onSend);
 
-  @override 
+  @override
   Widget build(BuildContext context){
     return Row(
         children: <Widget>[
@@ -23,7 +24,7 @@ class MessageInputWidget extends StatelessWidget{
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(
-                  width: 1 
+                  width: 1
                 )
               ),
               alignment: Alignment.center,
@@ -46,10 +47,11 @@ class MessageInputWidget extends StatelessWidget{
         ],
     );
   }
+
   void sendMessage(){
     s.write(this.inputController.text);
     this.messages.insert(0, ChatBubbleWidget(
-      this.inputController.text, 
+      this.inputController.text,
       left: false,
     ));
     this.inputController.clear();
