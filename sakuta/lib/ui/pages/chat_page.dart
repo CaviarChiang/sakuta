@@ -2,41 +2,39 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import '../widgets/chat_bubble_widget.dart';
 import '../widgets/message_input_widget.dart';
+import '../widgets/message_view_widget.dart';
 
 class ChatPage extends StatefulWidget{
-  var messages = List<ChatBubbleWidget>();
-  _ChatPageState createState() => _ChatPageState(this.messages, ScrollController());
+  List<Widget> messages = List<ChatBubbleWidget>();
+  _ChatPageState createState() => _ChatPageState(this.messages);
 }
-
 
 class _ChatPageState extends State<ChatPage>{
   Socket s;
-  String title = "message";
   List<Widget> messages;
-  ScrollController _scrollController;
-  _ChatPageState(this.messages, this._scrollController);
+  String title = "message";
+  _ChatPageState(this.messages);
 
-  @override
+    @override
   void initState(){
     super.initState();
     Socket.connect('mrmyyesterday.com', 5000).then((socket){
-      this.s = socket;
-      socket.listen((data) {
-        String message = new String.fromCharCodes(data).trim();
-        //print(message);
-        setState(() {
-          this.messages.insert(0, ChatBubbleWidget(message));  
-          scrollToBottom();
-        });
-      },
-      onDone: () {
-        socket.destroy();
+      setState(() {
+        this.s = socket;
       });
     });
   }
 
   @override
   Widget build(BuildContext context){
+    if(s == null){
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("LOADING"),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(this.title),
@@ -44,22 +42,17 @@ class _ChatPageState extends State<ChatPage>{
       body: Material(
         child: Column(
           children: <Widget>[
-            ListView(
-              reverse: true,
-              controller: this._scrollController,
-              children: List.from(this.messages),
-            ),
-            MessageInputWidget(s),
+            MessageViewWidget(s, this.messages),
+            MessageInputWidget(s, this.messages, refresh),
           ],
         ),
       ),
     );
   }
-  void scrollToBottom(){
-    this._scrollController.animateTo(
-      0.0,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 300),
-    );
+
+  void refresh(){
+    setState(() {
+      
+    });
   }
 }

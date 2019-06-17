@@ -1,22 +1,42 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'chat_bubble_widget.dart';
+
 class MessageInputWidget extends StatelessWidget{
   final inputController = TextEditingController();
+  final List<Widget> messages;
   final Socket s;
-  MessageInputWidget(this.s);
+  final Function onSend;
+  MessageInputWidget(this.s, this.messages, this.onSend);
 
   @override 
   Widget build(BuildContext context){
-    return Container(
-      child: Row(
+    return Row(
         children: <Widget>[
-          Container(
-            child: TextField(
-                controller: inputController,
-                decoration: InputDecoration(
-                  helperText: "write something ..."
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(
+                left: 10
+              ),
+              padding: EdgeInsets.fromLTRB(7, 5, 5, 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  width: 1 
+                )
+              ),
+              alignment: Alignment.center,
+              child: TextField(
+                style: TextStyle(
+                  fontSize: 20,
+                  height: 1
                 ),
+                controller: inputController,
+                decoration: InputDecoration.collapsed(
+                  hintText: "write something ...",
+                ),
+              ),
             ),
           ),
           IconButton(
@@ -24,11 +44,15 @@ class MessageInputWidget extends StatelessWidget{
             icon: Icon(Icons.send),
           ),
         ],
-      ),
     );
   }
   void sendMessage(){
     s.write(this.inputController.text);
+    this.messages.insert(0, ChatBubbleWidget(
+      this.inputController.text, 
+      left: false,
+    ));
     this.inputController.clear();
+    this.onSend();
   }
 }
