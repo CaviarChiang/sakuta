@@ -19,7 +19,7 @@ class _ChatPageState extends State<ChatPage>{
   @override
   void initState(){
     super.initState();
-    Socket.connect('mrmyyesterday.com', 5000).then((socket){
+    Socket.connect('mrmyyesterday.com', 5001).then((socket){
       setState(() {
         this.s = socket;
       });

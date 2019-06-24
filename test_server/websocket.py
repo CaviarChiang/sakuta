@@ -13,7 +13,7 @@ async def hello(websocket, path):
             print('connection lost')
             break
 
-start_server = websockets.serve(hello, 'localhost', 5000)
+start_server = websockets.serve(hello, '0.0.0.0', 5000)
 print('Server started')
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
