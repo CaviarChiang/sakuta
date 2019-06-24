@@ -5,11 +5,12 @@ import 'chat_bubble_widget.dart';
 
 class MessageInputWidget extends StatelessWidget{
   final inputController = TextEditingController();
+  final scrollController;
   final List<Widget> messages;
   final Socket s;
   final Function onSend;
 
-  MessageInputWidget(this.s, this.messages, this.onSend);
+  MessageInputWidget(this.s, this.messages, this.onSend, this.scrollController);
 
   @override
   Widget build(BuildContext context){
@@ -56,5 +57,10 @@ class MessageInputWidget extends StatelessWidget{
     ));
     this.inputController.clear();
     this.onSend();
+    this.scrollController.animateTo(
+      0.0,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 }

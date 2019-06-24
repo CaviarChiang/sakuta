@@ -6,32 +6,29 @@ import 'chat_bubble_widget.dart';
 class MessageViewWidget extends StatefulWidget{
   final Socket s;
   final List<Widget> messages;
+  final scrollController;
 
-  MessageViewWidget(this.s, this.messages);
+  MessageViewWidget(this.s, this.messages, this.scrollController);
 
   @override
-  _MessageViewWidgetState createState() => _MessageViewWidgetState(this.s, this.messages, ScrollController());
+  _MessageViewWidgetState createState() => _MessageViewWidgetState();
 }
 
 class _MessageViewWidgetState extends State<MessageViewWidget>{
-  Socket s;
-  List<Widget> messages;
-  ScrollController _scrollController;
-
-  _MessageViewWidgetState(this.s, this.messages, this._scrollController);
+  _MessageViewWidgetState();
 
   @override
   void initState(){
     super.initState();
-    s.listen((data) {
+    widget.s.listen((data) {
       String message = new String.fromCharCodes(data).trim();
       setState(() {
-        this.messages.insert(0, ChatBubbleWidget(message));
+        widget.messages.insert(0, ChatBubbleWidget(message));
         scrollToBottom();
       });
     },
     onDone: () {
-      s.destroy();
+      widget.s.destroy();
     });
   }
 
@@ -40,14 +37,14 @@ class _MessageViewWidgetState extends State<MessageViewWidget>{
     return Expanded(
       child: ListView(
         reverse: true,
-        controller: this._scrollController,
-        children: List.from(this.messages),
+        controller: widget.scrollController,
+        children: List.from(widget.messages),
       ),
     );
   }
 
   void scrollToBottom(){
-    this._scrollController.animateTo(
+    widget.scrollController.animateTo(
       0.0,
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
