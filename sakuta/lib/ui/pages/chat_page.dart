@@ -14,21 +14,22 @@ class ChatPage extends StatefulWidget{
 
 class _ChatPageState extends State<ChatPage>{
   Socket s;
+  WebSocket webSocket;
   String title = "message";
 
   @override
   void initState(){
     super.initState();
-    Socket.connect('mrmyyesterday.com', 5001).then((socket){
+    WebSocket.connect('ws://mrmyyesterday.com:5000').then((ws){
       setState(() {
-        this.s = socket;
+        this.webSocket = ws;        
       });
     });
   }
 
   @override
   Widget build(BuildContext context){
-    if(this.s == null){
+    if(this.isLoading()){
       return Scaffold(
         appBar: AppBar(
           title: Text("LOADING"),
@@ -42,8 +43,8 @@ class _ChatPageState extends State<ChatPage>{
         body: Material(
           child: Column(
             children: <Widget>[
-              MessageViewWidget(this.s, widget.messages, widget.scrollController),
-              MessageInputWidget(this.s, widget.messages, refresh, widget.scrollController),
+              MessageViewWidget(this.webSocket, widget.messages, widget.scrollController),
+              MessageInputWidget(this.webSocket, widget.messages, refresh, widget.scrollController),
             ],
           ),
         ),
@@ -53,5 +54,13 @@ class _ChatPageState extends State<ChatPage>{
 
   void refresh(){
     setState(() {});
+  }
+
+  bool isLoading(){
+    if(this.webSocket == null || this.webSocket.readyState != WebSocket.open){
+      return true;
+    }else{
+      return false;
+    }
   }
 }

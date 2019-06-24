@@ -4,11 +4,11 @@ import 'dart:io';
 import 'chat_bubble_widget.dart';
 
 class MessageViewWidget extends StatefulWidget{
-  final Socket s;
+  final WebSocket webSocket;
   final List<Widget> messages;
   final scrollController;
 
-  MessageViewWidget(this.s, this.messages, this.scrollController);
+  MessageViewWidget(this.webSocket, this.messages, this.scrollController);
 
   @override
   _MessageViewWidgetState createState() => _MessageViewWidgetState();
@@ -20,15 +20,11 @@ class _MessageViewWidgetState extends State<MessageViewWidget>{
   @override
   void initState(){
     super.initState();
-    widget.s.listen((data) {
-      String message = new String.fromCharCodes(data).trim();
+    widget.webSocket.listen((data){
       setState(() {
-        widget.messages.insert(0, ChatBubbleWidget(message));
+        widget.messages.insert(0, ChatBubbleWidget(data));
         scrollToBottom();
       });
-    },
-    onDone: () {
-      widget.s.destroy();
     });
   }
 

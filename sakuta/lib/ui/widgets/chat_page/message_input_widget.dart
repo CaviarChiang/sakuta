@@ -7,10 +7,10 @@ class MessageInputWidget extends StatelessWidget{
   final inputController = TextEditingController();
   final scrollController;
   final List<Widget> messages;
-  final Socket s;
+  final WebSocket webSocket;
   final Function onSend;
 
-  MessageInputWidget(this.s, this.messages, this.onSend, this.scrollController);
+  MessageInputWidget(this.webSocket, this.messages, this.onSend, this.scrollController);
 
   @override
   Widget build(BuildContext context){
@@ -50,7 +50,7 @@ class MessageInputWidget extends StatelessWidget{
   }
 
   void sendMessage(){
-    s.write(this.inputController.text);
+    this.webSocket.add(this.inputController.text);
     this.messages.insert(0, ChatBubbleWidget(
       this.inputController.text,
       left: false,
