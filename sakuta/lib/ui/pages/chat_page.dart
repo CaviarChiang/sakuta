@@ -13,7 +13,6 @@ class ChatPage extends StatefulWidget{
 }
 
 class _ChatPageState extends State<ChatPage>{
-  Socket s;
   WebSocket webSocket;
   String title = "message";
 

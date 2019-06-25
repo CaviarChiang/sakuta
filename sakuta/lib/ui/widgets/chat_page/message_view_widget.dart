@@ -6,7 +6,7 @@ import 'chat_bubble_widget.dart';
 class MessageViewWidget extends StatefulWidget{
   final WebSocket webSocket;
   final List<Widget> messages;
-  final scrollController;
+  final ScrollController scrollController;
 
   MessageViewWidget(this.webSocket, this.messages, this.scrollController);
 
