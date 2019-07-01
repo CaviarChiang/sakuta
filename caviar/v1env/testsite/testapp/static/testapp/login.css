@@ -1,0 +1,15 @@
+.jumbotron {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.container {
+    width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.container h1 {
+    margin-bottom: 30px;
+}

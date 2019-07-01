@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <meta name="description" content="Home Page for HW4 - 17637 19S">
+    <meta name="author" content="yuyanj">
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'testapp/login.css' %}">
+</head>
+
+<body>
+
+    <div class="jumbotron">
+        <span id="id_name_of_site">
+            <h1>Test Messenger</h1>
+        </span>
+        <a id="id_signup_link" href="{% url 'signup' %}" class="nav-link">Signup</a>
+    </div>
+
+    {% for message in messages %}
+    <div class="alert alert-danger">
+        <span class="errorlist">{{ message }}</span>
+    </div>
+    {% endfor %}
+
+    <div class="container">
+        <h1>Login</h1>
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">Username: </label>
+                <input type="text" id="id_username" name="username">
+            </div>
+            <div class="form-group">
+                <label for="id_password">Password: </label>
+                <input type="password" id="id_password" name="password">
+            </div>
+            <button id="id_login_button" class="btn btn-secondary">Submit</button>
+        </form>
+    </div>
+
+</body>
+
+</html>
