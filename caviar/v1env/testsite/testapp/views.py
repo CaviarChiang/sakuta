@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import HttpResponseRedirect, HttpResponse, Http404, JsonResponse
 
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -111,19 +111,42 @@ def message_load(request):
         sender_id = request.GET['sender_id']
         receiver_id = request.GET['receiver_id']
 
-        sender = User.objects.get(id=sender_id)
-        receiver = User.objects.get(id=receiver_id)
-
-        sent_messages = Message.objects.filter(sender=sender)\
-            & Message.objects.filter(receiver=receiver)
-        received_messages = Message.objects.filter(sender=receiver)\
-            & Message.objects.filter(receiver=sender)
+        sent_messages = Message.objects.filter(sender=sender_id)\
+            & Message.objects.filter(receiver=receiver_id)
+        received_messages = Message.objects.filter(sender=receiver_id)\
+            & Message.objects.filter(receiver=sender_id)
         messages = (sent_messages | received_messages).order_by(
             'created_at')[:MESSAGE_LIMIT]
 
         json_res = serializers.serialize('json', messages)
 
         return HttpResponse(json_res, content_type='application/json')
+
+
+def chatlist_load(request):
+    if request.method == 'GET':
+        user_id = int(request.GET['user_id'])  # id's are stored as ints
+
+        # [Django - how do I select a particular column from a model?](https://stackoverflow.com/questions/10704926/django-how-do-i-select-a-particular-column-from-a-model)
+        # chatlist_as_sender = set(Message.objects.filter(
+        #     sender=user).values_list('receiver', flat=True))
+        messages = Message.objects.filter(sender=user_id)\
+            | Message.objects.filter(receiver=user_id)
+        chatlist = messages.values_list(
+            'sender', 'receiver', 'created_at').order_by('-created_at')
+
+        chatlist_no_dups = []
+        chatset = set()
+        for chat in chatlist:
+            if chat[0] == user_id and chat[1] not in chatset:
+                chatlist_no_dups.append(chat[1])
+                chatset.add(chat[1])
+            elif chat[1] == user_id and chat[0] not in chatset:
+                chatlist_no_dups.append(chat[0])
+                chatset.add(chat[0])
+
+        # [Json response list with django](https://stackoverflow.com/questions/25963552/json-response-list-with-django)
+        return JsonResponse({'chatlist_userids': chatlist_no_dups})
 
 
 def error(request):

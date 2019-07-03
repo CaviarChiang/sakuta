@@ -10,4 +10,5 @@ urlpatterns = [
     path('signup', views.signup_action, name="signup"),
     path('message-save', views.message_save, name='message-save'),
     path('message-load', views.message_load, name='message-load'),
+    path('chatlist-load', views.chatlist_load, name='chatlist-load'),
 ]
