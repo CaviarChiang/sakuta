@@ -63,4 +63,8 @@ class MessageInputWidget extends StatelessWidget{
       duration: const Duration(milliseconds: 300),
     );
   }
+
+  void formatMessage(){
+    
+  }
 }

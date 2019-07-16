@@ -1,20 +1,33 @@
 import asyncio
 import websockets
+import json
 
 async def hello():
-    async with websockets.connect('ws://mrmyyesterday.com:5000') as websocket:
-        name = input("What's your name? ")
+    sender_id = input("What's your id? ")
+    json_obj = {
+        "user_id": sender_id,
+    }
+    json_string = json.dumps(json_obj)
 
-        await websocket.send(name)
-        print(f"> {name}")
+    async with websockets.connect('ws://localhost:5000') as websocket:
 
-        greeting = await websocket.recv()
-        print(f"< {greeting}")
+        await websocket.send(json_string)
+        if sender_id == "zhou":
+            print("zhou!!")
+            print(await websocket.recv())
 
-        await websocket.send(name)
-        print(f"> {name}")
+        while True:
+            receiver_id = input("What's your destination id? ")
+            message = input("What's your message? ")
 
-        greeting = await websocket.recv()
-        print(f"< {greeting}")
+            json_obj = {
+                "sender_id": sender_id,
+                "receiver_id": receiver_id,
+                "message": message,
+            }
+            json_string = json.dumps(json_obj)
+            await websocket.send(json_string)
+            print(f"> {json_string}")
+            print(await websocket.recv())
 
 asyncio.get_event_loop().run_until_complete(hello())

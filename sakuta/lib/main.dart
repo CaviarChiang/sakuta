@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'ui/pages/chat_page.dart';
+import 'package:sakuta/ui/pages/chats_page.dart';
+import 'ui/pages/chats_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: ChatPage()
+      home: ChatsPage(title: 1.toString())
     );
   }
 }
