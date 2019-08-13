@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-
-import '../../pages/chat_page.dart';
 
 class ChatItemWidget extends StatefulWidget {
   final String name;

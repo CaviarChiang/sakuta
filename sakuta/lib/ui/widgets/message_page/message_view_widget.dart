@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:sakuta/data/app_data.dart';
 
 import 'chat_bubble_widget.dart';
 
 class MessageViewWidget extends StatefulWidget{
-  final Stream webSocket;
-  final List<Widget> messages;
+  final AppData appData;
   final ScrollController scrollController;
 
-  MessageViewWidget(this.webSocket, this.messages, this.scrollController);
+  MessageViewWidget({this.appData, this.scrollController});
 
   @override
   _MessageViewWidgetState createState() => _MessageViewWidgetState();
@@ -20,9 +19,10 @@ class _MessageViewWidgetState extends State<MessageViewWidget>{
   @override
   void initState(){
     super.initState();
-    widget.webSocket.listen((data){
+    List<Widget> messages = widget.appData.messageCache[widget.appData.targetId];
+    widget.appData.webSocketStream.listen((data){
       setState(() {
-        widget.messages.insert(0, ChatBubbleWidget(data));
+        messages.insert(0, ChatBubbleWidget(data));
         scrollToBottom();
       });
     });
@@ -30,11 +30,12 @@ class _MessageViewWidgetState extends State<MessageViewWidget>{
 
   @override
   Widget build(BuildContext context){
+    List<Widget> messages = widget.appData.messageCache[widget.appData.targetId];
     return Expanded(
       child: ListView(
         reverse: true,
         controller: widget.scrollController,
-        children: List.from(widget.messages),
+        children: List.from(messages),
       ),
     );
   }

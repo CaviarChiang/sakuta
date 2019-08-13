@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
 
-import 'chat_bubble_widget.dart';
+import 'package:sakuta/data/app_data.dart';
+import 'package:sakuta/ui/widgets/message_page/chat_bubble_widget.dart';
 
 class MessageInputWidget extends StatelessWidget{
+  final AppData appData;
   final inputController = TextEditingController();
-  final scrollController;
-  final List<Widget> messages;
-  final WebSocket webSocket;
+  final ScrollController scrollController;
   final Function onSend;
 
-  MessageInputWidget(this.webSocket, this.messages, this.onSend, this.scrollController);
+  MessageInputWidget({this.appData, this.onSend, this.scrollController});
 
   @override
   Widget build(BuildContext context){
@@ -50,8 +49,10 @@ class MessageInputWidget extends StatelessWidget{
   }
 
   void sendMessage(){
-    this.webSocket.add(this.inputController.text);
-    this.messages.insert(0, ChatBubbleWidget(
+    List<Widget> messages = this.appData.messageCache[this.appData.targetId];
+
+    this.appData.webSocket.add(this.appData.messageUtil.formatMessage(this.inputController.text, this.appData.targetId));
+    messages.insert(0, ChatBubbleWidget(
       this.inputController.text,
       left: false,
     ));

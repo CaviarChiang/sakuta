@@ -5,7 +5,7 @@ class ChatBubbleWidget extends StatelessWidget{
   final String message;
 
   ChatBubbleWidget(this.message, {
-    this.left:true,
+    this.left = true,
   });
 
   Widget build(BuildContext context){

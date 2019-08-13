@@ -1,41 +1,37 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:http/http.dart';
-import 'package:sakuta/utils/data_manager.dart' as prefix0;
+import 'dart:io';
 
-import 'layouts/layout.dart';
-import '../../utils/data_manager.dart';
-import '../pages/chat_page.dart';
-import '../widgets/chats_page/chat_item_widget.dart';
+import 'package:sakuta/data/app_data.dart';
+import 'package:sakuta/ui/pages/message_page.dart';
+import 'package:sakuta/ui/widgets/chats_page/chat_item_widget.dart';
+import 'package:sakuta/ui/widgets/layout_widget.dart';
+import 'package:sakuta/utils/data_manager.dart';
+
 
 class ChatsPage extends StatefulWidget {
-  final String title;
-  final chats = List<ChatItemWidget>();
-  final messageCache = Map<String, List<Widget>>();
-
-  ChatsPage({this.title = "Default chats page"}){
-    DataManager.userId = title;
-  }
+  final AppData appData;
+  ChatsPage({this.appData});
 
   _ChatsPageState createState() => _ChatsPageState();
 }
 
 class _ChatsPageState extends State<ChatsPage> {
-  WebSocket webSocket;
-  Stream webSocketStream;
   @override
   void initState() { 
     super.initState();
+    DataManager dataManager = widget.appData.dataManager;
+    String userId = widget.appData.userId;
+    dataManager.loadChats(userId).then(loadChatsHandler);
 
-    DataManager.loadChats(widget.title).then(loadChatsHandler);
-
-    WebSocket.connect('ws://mrmyyesterday.com:5000').then((ws){
+    //ws://mrmyyesterday.com:5000
+    WebSocket.connect(dataManager.relayServer).then((ws){
       setState(() {
-        this.webSocket = ws;    
-        this.webSocketStream = ws.asBroadcastStream();    
+        widget.appData.webSocket = ws;
+        widget.appData.webSocketStream = ws.asBroadcastStream();
+        ws.add(widget.appData.messageUtil.formatLogIn(userId));
       });
     });
   }
@@ -43,25 +39,25 @@ class _ChatsPageState extends State<ChatsPage> {
   @override
   Widget build(BuildContext context) {
     return LayoutWidget(
-      title: Text(widget.title),
       isLoading: isLoading(),
       child: ListView(
         //controller: widget.scrollController,
-        children: List.from(widget.chats),
+        children: List.from(widget.appData.chats),
       ),
     );
   }
 
   bool isLoading(){
-    return widget.chats.length == 0 || webSocket == null;
+    return widget.appData.chats.length == 0 || widget.appData.webSocket == null;
   }
 
   void loadChatsHandler(Response response){
     var list = json.decode(response.body);
+    widget.appData.chats.clear();
     setState(() {
       for(int item in list['chatlist_userids']){
-        widget.messageCache[item.toString()] = List<Widget>();
-        widget.chats.add(ChatItemWidget(
+        widget.appData.messageCache[item.toString()] = List<Widget>();
+        widget.appData.chats.add(ChatItemWidget(
           name: item.toString(), 
           callback: getTapHandler(item),
         ));
@@ -71,15 +67,13 @@ class _ChatsPageState extends State<ChatsPage> {
 
   Function getTapHandler(int item){
     return () {
+      widget.appData.targetId = item.toString();
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ChatPage(
-          title: item.toString(), 
-          messages: widget.messageCache[item.toString()], 
-          webSocket: this.webSocket,
-          webSocketStream: this.webSocketStream)
+        MaterialPageRoute(builder: (context) => MessagePage(
+          appData: widget.appData,
         ),
-      );
+      ));
     };
   }
 }
