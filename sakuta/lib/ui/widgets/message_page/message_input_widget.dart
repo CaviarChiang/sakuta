@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:sakuta/data/app_data.dart';
 import 'package:sakuta/ui/widgets/message_page/chat_bubble_widget.dart';
+import 'package:sakuta/utils/values.dart';
 
 class MessageInputWidget extends StatelessWidget{
   final AppData appData;
@@ -35,7 +36,7 @@ class MessageInputWidget extends StatelessWidget{
                 ),
                 controller: inputController,
                 decoration: InputDecoration.collapsed(
-                  hintText: "write something ...",
+                  hintText: Values.CHAT_INPUT_HINT,
                 ),
               ),
             ),
@@ -50,7 +51,6 @@ class MessageInputWidget extends StatelessWidget{
 
   void sendMessage(){
     List<Widget> messages = this.appData.messageCache[this.appData.targetId];
-
     this.appData.webSocket.add(this.appData.messageUtil.formatMessage(this.inputController.text, this.appData.targetId));
     messages.insert(0, ChatBubbleWidget(
       this.inputController.text,
@@ -63,9 +63,5 @@ class MessageInputWidget extends StatelessWidget{
       curve: Curves.easeOut,
       duration: const Duration(milliseconds: 300),
     );
-  }
-
-  void formatMessage(){
-    
   }
 }

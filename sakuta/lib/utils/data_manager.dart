@@ -1,8 +1,9 @@
 import 'package:http/http.dart';
 
+import 'package:sakuta/utils/values.dart';
+
 class DataManager {
   //mmy.com:8080
-  final String host = 'http://18.222.226.32';
   final String chatListQuery = 'chatlist-load?user_id=';
   final String messageHistoryQueryParam1 = 'message-load?sender_id=';
   final String messageHistoryQueryParam2 = '&receiver_id=';
@@ -16,12 +17,12 @@ class DataManager {
 
   Future<Response> loadChats(String userId){
     //http://mrmyyesterday.com:8080/chatlist-load?user_id=1
-    return get(host + '/' + chatListQuery + userId);
+    return get(Values.SERVER_HOST + '/' + chatListQuery + userId);
   }
 
   Future<Response> loadHistory(String userId, String targetId){
-    return get(host + '/' + 
+    return get(Values.SERVER_HOST + '/' + 
       messageHistoryQueryParam1 + userId + 
       messageHistoryQueryParam2 + targetId);
-  }  
+  }
 }

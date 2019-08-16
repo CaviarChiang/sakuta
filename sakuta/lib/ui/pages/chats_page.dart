@@ -9,7 +9,7 @@ import 'package:sakuta/ui/pages/message_page.dart';
 import 'package:sakuta/ui/widgets/chats_page/chat_item_widget.dart';
 import 'package:sakuta/ui/widgets/layout_widget.dart';
 import 'package:sakuta/utils/data_manager.dart';
-
+import 'package:sakuta/utils/values.dart';
 
 class ChatsPage extends StatefulWidget {
   final AppData appData;
@@ -20,7 +20,7 @@ class ChatsPage extends StatefulWidget {
 
 class _ChatsPageState extends State<ChatsPage> {
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     DataManager dataManager = widget.appData.dataManager;
     String userId = widget.appData.userId;
@@ -55,10 +55,10 @@ class _ChatsPageState extends State<ChatsPage> {
     var list = json.decode(response.body);
     widget.appData.chats.clear();
     setState(() {
-      for(int item in list['chatlist_userids']){
+      for(int item in list[Values.CHATLIST_ID]){
         widget.appData.messageCache[item.toString()] = List<Widget>();
         widget.appData.chats.add(ChatItemWidget(
-          name: item.toString(), 
+          name: item.toString(),
           callback: getTapHandler(item),
         ));
       }
