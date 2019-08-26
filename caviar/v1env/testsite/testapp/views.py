@@ -15,7 +15,7 @@ from django.conf import settings
 
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Profile, Message
+from .models import User, Profile, Message
 from .forms import LoginForm, SignupForm, ProfileForm
 
 
@@ -88,9 +88,10 @@ def signup_action(request):
 def message_save(request):
     if request.method == 'POST':
         msg_content = request.POST['msg_content']
-        sender_id = request.POST['sender_id']
-        receiver_id = request.POST['receiver_id']
+        sender_id = int(request.POST['sender_id'])
+        receiver_id = int(request.POST['receiver_id'])
         # created_at = request.POST['created_at']
+        print("Saving message: " + msg_content)
 
         # can we store user id's instead of user references?
         sender = User.objects.get(id=sender_id)
@@ -145,8 +146,15 @@ def chatlist_load(request):
                 chatlist_no_dups.append(chat[0])
                 chatset.add(chat[0])
 
+        # chatlist_users = User.objects.filter(
+        #     pk__in=chatlist_no_dups).values_list('id', 'username')
+
+        json_res = serializers.serialize('json', User.objects.filter(
+            pk__in=chatlist_no_dups), fields=('id', 'username'))
+        return HttpResponse(json_res, content_type='application/json')
+
         # [Json response list with django](https://stackoverflow.com/questions/25963552/json-response-list-with-django)
-        return JsonResponse({'chatlist_userids': chatlist_no_dups})
+        # return JsonResponse({'chatlist_users': chatlist_users})
 
 
 def error(request):
