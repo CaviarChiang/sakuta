@@ -107,7 +107,7 @@ def message_save(request):
 
 def message_load(request):
     # [Django - limiting query results](https://stackoverflow.com/questions/6574003/django-limiting-query-results)
-    MESSAGE_LIMIT = 50
+    MESSAGE_LIMIT = 500
     if request.method == 'GET':
         sender_id = request.GET['sender_id']
         receiver_id = request.GET['receiver_id']
